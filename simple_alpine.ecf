@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-22-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-22-0 http://www.eiffel.com/developers/xml/configuration-1-22-0.xsd" name="simple_alpine" uuid="B2C3D4E5-F6A7-8901-BCDE-F12345678901" library_target="simple_alpine">
+	<description>Simple Alpine - Fluent Alpine.js attribute builder for Eiffel web applications</description>
+	<target name="simple_alpine">
+		<root all_classes="true"/>
+		<option warning="warning" syntax="provisional" manifest_array_type="mismatch_warning">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<setting name="console_application" value="true"/>
+		<setting name="dead_code_removal" value="feature"/>
+		<capability>
+			<concurrency support="none"/>
+			<void_safety support="all"/>
+		</capability>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="simple_htmx" location="$SIMPLE_HTMX\simple_htmx.ecf"/>
+		<cluster name="src" location=".\src\" recursive="true"/>
+	</target>
+	<target name="simple_alpine_tests" extends="simple_alpine">
+		<root class="APPLICATION" feature="make"/>
+		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
+		<library name="testing_ext" location="$TESTING_EXT\testing_ext.ecf"/>
+		<cluster name="tests" location=".\testing\" recursive="true"/>
+	</target>
+</system>
