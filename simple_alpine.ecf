@@ -14,12 +14,20 @@
 		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="simple_htmx" location="$SIMPLE_HTMX\simple_htmx.ecf"/>
-		<cluster name="src" location=".\src\" recursive="true"/>
+		<cluster name="src" location=".\src\" recursive="true">
+			<file_rule>
+				<exclude>/mock_app$</exclude>
+			</file_rule>
+		</cluster>
 	</target>
 	<target name="simple_alpine_tests" extends="simple_alpine">
 		<root class="APPLICATION" feature="make"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 		<library name="testing_ext" location="$TESTING_EXT\testing_ext.ecf"/>
 		<cluster name="tests" location=".\testing\" recursive="true"/>
+	</target>
+	<target name="mock_app" extends="simple_alpine">
+		<root class="MOCK_APP" feature="make"/>
+		<cluster name="mock_app_src" location=".\src\mock_app\" recursive="true"/>
 	</target>
 </system>
