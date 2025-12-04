@@ -713,6 +713,23 @@ feature -- Components
         .dark-mode .bg-white { background-color: #2d3748; color: #f7fafc; }
         .dark-mode .hover\:bg-gray-100:hover { background-color: #4a5568; }
         .dark-mode .border { border-color: #4a5568; }
+        /* Dark mode for info boxes */
+        .dark-mode .bg-blue-50 { background-color: #1e3a5f; }
+        .dark-mode .border-blue-400 { border-color: #60a5fa; }
+        .dark-mode .text-blue-800 { color: #93c5fd; }
+        .dark-mode .text-blue-700 { color: #bfdbfe; }
+        .dark-mode .text-blue-600 { color: #93c5fd; }
+        /* Dark mode for gray text */
+        .dark-mode .text-gray-600 { color: #9ca3af; }
+        .dark-mode .text-gray-500 { color: #9ca3af; }
+        /* Dark mode for form elements */
+        .dark-mode .bg-gray-100 { background-color: #374151; color: #f3f4f6; }
+        .dark-mode .bg-gray-50 { background-color: #374151; color: #f3f4f6; }
+        .dark-mode input, .dark-mode select, .dark-mode textarea {
+            background-color: #374151;
+            color: #f3f4f6;
+            border-color: #4b5563;
+        }
     </style>
 </head>
 <body class="p-8 transition-colors duration-200" x-data="{ dark: false }" x-init="dark = localStorage.getItem('darkMode') === 'true'" x-effect="localStorage.setItem('darkMode', dark)" :class="{ 'dark-mode': dark }">
