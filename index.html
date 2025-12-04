@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simple_alpine Mock App</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .dark-mode { background-color: #1a202c; color: #f7fafc; }
+        .dark-mode .modal-content { background-color: #2d3748; color: #f7fafc; }
+        .dark-mode .bg-gray-200 { background-color: #4a5568; color: #f7fafc; }
+        .dark-mode .bg-white { background-color: #2d3748; color: #f7fafc; }
+        .dark-mode .hover\:bg-gray-100:hover { background-color: #4a5568; }
+        .dark-mode .border { border-color: #4a5568; }
+    </style>
+</head>
+<body class="p-8 transition-colors duration-200" x-data="{ dark: false }" x-init="dark = localStorage.getItem('darkMode') === 'true'" x-effect="localStorage.setItem('darkMode', dark)" :class="{ 'dark-mode': dark }">
+    <h1 class="text-3xl font-bold mb-8">simple_alpine Components</h1>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Dark Mode Toggle</h2>
+        <button class="px-4 py-2 rounded bg-gray-200" @click="dark = !dark" x-text="dark ? 'Switch to Light' : 'Switch to Dark'"></button>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Dropdown Menu</h2><div class="relative inline-block" x-data="{ open: false }"><button class="px-4 py-2 bg-blue-500 text-white rounded" @click="open = !open">Menu</button><div class="absolute mt-2 w-48 bg-white rounded shadow-lg" x-show="open" @click.outside="open = false" @keydown.escape="open = false" x-transition=""><div class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Profile</div><div class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Settings</div><div class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Logout</div></div></div>    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Modal Dialog</h2><div x-data="{ open: false }"><button class="px-4 py-2 bg-green-500 text-white rounded" @click="open = true">Open Modal</button><div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" x-show="open" @click="open = false" @keydown.escape="open = false" x-transition.opacity=""><div class="bg-white p-6 rounded-lg shadow-xl max-w-md mx-auto" @click.stop="" x-trap="open"><div class="text-xl font-bold mb-4">Modal Title</div><div class="mb-4">This is the modal content. It can contain any HTML.</div><div class="flex justify-end"><button class="px-4 py-2 bg-gray-500 text-white rounded" @click="open = false">Close</button></div></div></div></div>    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Tabs</h2><div x-data="{ activeTab: 'home' }"><div class="flex border-b"><button class="px-4 py-2" @click="activeTab = 'home'" :class="{ 'border-b-2 border-blue-500': activeTab === 'home' }">Home</button><button class="px-4 py-2" @click="activeTab = 'profile'" :class="{ 'border-b-2 border-blue-500': activeTab === 'profile' }">Profile</button><button class="px-4 py-2" @click="activeTab = 'settings'" :class="{ 'border-b-2 border-blue-500': activeTab === 'settings' }">Settings</button></div><div class="p-4" x-show="activeTab === 'home'">Welcome to the home tab!</div><div class="p-4" x-show="activeTab === 'profile'">This is your profile information.</div><div class="p-4" x-show="activeTab === 'settings'">Configure your settings here.</div></div>    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Accordion</h2><div class="border rounded" x-data="{ activeIndex: null }"><div class="border-b"><div><button class="w-full text-left px-4 py-2 bg-gray-200" @click="activeIndex = activeIndex === 0 ? null : 0">Section 1</button></div><div class="px-4 py-2" x-show="activeIndex === 0" x-collapse="">Content for section 1. This collapses smoothly.</div></div><div class="border-b"><div><button class="w-full text-left px-4 py-2 bg-gray-200" @click="activeIndex = activeIndex === 1 ? null : 1">Section 2</button></div><div class="px-4 py-2" x-show="activeIndex === 1" x-collapse="">Content for section 2. Also collapses smoothly.</div></div></div>    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Counter</h2><div class="flex items-center gap-2" x-data="{ count: 0 }"><button class="px-3 py-1 bg-red-500 text-white rounded" @click="count--">-</button><span class="px-4 text-xl font-bold" x-text="count"></span><button class="px-3 py-1 bg-green-500 text-white rounded" @click="count++">+</button></div>    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">HTMX + Alpine Combo</h2><button class="px-4 py-2 bg-blue-500 text-white rounded" x-data="{ loading: false }" @click="loading = true" :disabled="loading" :class="{ 'opacity-50 cursor-wait': loading }" hx-get="/api/data" hx-target="#result" hx-swap="innerHTML" hx-on::after-request="loading = false">Load Data</button>        <div id="result" class="mt-4 p-4 border rounded"></div>
+    </section>
+</body>
+</html>

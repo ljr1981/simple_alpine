@@ -24,40 +24,20 @@ feature {NONE} -- Initialization
 
 	make
 			-- Run mock application.
+		local
+			l_file: PLAIN_TEXT_FILE
+			l_html: STRING
 		do
 			create alpine
-			print ("=== simple_alpine Mock App ===%N%N")
+			l_html := build_full_page
 
-			print ("--- Dark Mode Toggle ---%N")
-			print (build_dark_mode_toggle)
-			print ("%N%N")
+			-- Write to index.html
+			create l_file.make_open_write ("index.html")
+			l_file.put_string (l_html)
+			l_file.close
 
-			print ("--- Dropdown Menu ---%N")
-			print (build_dropdown_menu)
-			print ("%N%N")
-
-			print ("--- Modal Dialog ---%N")
-			print (build_modal_dialog)
-			print ("%N%N")
-
-			print ("--- Tabs Component ---%N")
-			print (build_tabs_component)
-			print ("%N%N")
-
-			print ("--- Accordion ---%N")
-			print (build_accordion)
-			print ("%N%N")
-
-			print ("--- Counter ---%N")
-			print (build_counter)
-			print ("%N%N")
-
-			print ("--- Combined HTMX + Alpine ---%N")
-			print (build_htmx_alpine_combo)
-			print ("%N%N")
-
-			print ("=== Full Page HTML ===%N%N")
-			print (build_full_page)
+			print ("Generated index.html (" + l_html.count.out + " bytes)%N")
+			print ("Open in browser: index.html%N")
 		end
 
 feature -- Components
@@ -77,6 +57,7 @@ feature -- Components
 			l_container := alpine.div
 			l_container.x_data (alpine.dark_mode_data)
 			    .x_init (alpine.dark_mode_init)
+			    .x_effect (alpine.dark_mode_watch)
 			    .containing (l_btn).do_nothing
 
 			Result := l_container.to_html_8
@@ -352,7 +333,7 @@ feature -- Components
 		do
 			Result := "[
 <!DOCTYPE html>
-<html lang="en" x-data="{ dark: false }" :class="{ 'dark': dark }">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -362,14 +343,22 @@ feature -- Components
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>[x-cloak] { display: none !important; }</style>
+    <style>
+        [x-cloak] { display: none !important; }
+        .dark-mode { background-color: #1a202c; color: #f7fafc; }
+        .dark-mode .modal-content { background-color: #2d3748; color: #f7fafc; }
+        .dark-mode .bg-gray-200 { background-color: #4a5568; color: #f7fafc; }
+        .dark-mode .bg-white { background-color: #2d3748; color: #f7fafc; }
+        .dark-mode .hover\:bg-gray-100:hover { background-color: #4a5568; }
+        .dark-mode .border { border-color: #4a5568; }
+    </style>
 </head>
-<body class="p-8 dark:bg-gray-900 dark:text-white">
+<body class="p-8 transition-colors duration-200" x-data="{ dark: false }" x-init="dark = localStorage.getItem('darkMode') === 'true'" x-effect="localStorage.setItem('darkMode', dark)" :class="{ 'dark-mode': dark }">
     <h1 class="text-3xl font-bold mb-8">simple_alpine Components</h1>
 
     <section class="mb-8">
         <h2 class="text-xl font-semibold mb-4">Dark Mode Toggle</h2>
-]" + build_dark_mode_toggle + "[
+        <button class="px-4 py-2 rounded bg-gray-200" @click="dark = !dark" x-text="dark ? 'Switch to Light' : 'Switch to Dark'"></button>
     </section>
 
     <section class="mb-8">

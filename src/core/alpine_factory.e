@@ -592,28 +592,26 @@ feature -- Magic Property Helpers
 feature -- Pre-built Patterns: Dark Mode
 
 	dark_mode_data: STRING
-			-- Standard dark mode x-data.
-			-- Checks localStorage, then system preference.
+			-- Simple dark mode x-data.
+			-- For complex localStorage logic, use x-init separately.
 		do
-			Result := "[
-				{
-					dark: localStorage.getItem('darkMode') === 'true' ||
-					      (!localStorage.getItem('darkMode') &&
-					       window.matchMedia('(prefers-color-scheme: dark)').matches)
-				}
-			]"
+			Result := "{ dark: false }"
 		end
 
 	dark_mode_init: STRING
 			-- Standard dark mode x-init.
-			-- Watches dark property, updates localStorage and html class.
+			-- Checks localStorage on load and sets initial document class.
+			-- Note: Avoids arrow functions (=>) due to HTML escaping in attributes.
 		do
-			Result := "[
-				$watch('dark', val => {
-					localStorage.setItem('darkMode', val);
-					document.documentElement.classList.toggle('dark', val)
-				})
-			]"
+			Result := "dark = localStorage.getItem('darkMode') === 'true'; document.documentElement.classList.toggle('dark', dark)"
+		end
+
+	dark_mode_watch: STRING
+			-- Expression for x-effect to persist dark mode AND update document class.
+			-- Use with x_effect() instead of in x-init.
+			-- Sets dark class on documentElement and persists to localStorage.
+		do
+			Result := "localStorage.setItem('darkMode', dark); document.documentElement.classList.toggle('dark', dark)"
 		end
 
 	dark_mode_toggle_expression: STRING
@@ -624,8 +622,9 @@ feature -- Pre-built Patterns: Dark Mode
 
 	dark_mode_icon_expression: STRING
 			-- Ternary for showing sun/moon icon.
+			-- Note: Uses text instead of emojis for encoding compatibility.
 		do
-			Result := "dark ? '☀️' : '🌙'"
+			Result := "dark ? 'Light' : 'Dark'"
 		end
 
 feature -- Pre-built Patterns: Dropdown

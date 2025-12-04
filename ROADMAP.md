@@ -28,14 +28,21 @@
 # From Git Bash (project directory)
 cd /d/prod/simple_alpine
 
-# Compile library
+# Set environment variable
 export SIMPLE_ALPINE="D:\\prod\\simple_alpine"
+
+# Compile library
 "/c/Program Files/Eiffel Software/EiffelStudio 25.02 Standard/studio/spec/win64/bin/ec.exe" \
   -batch -config simple_alpine.ecf -target simple_alpine -c_compile
 
-# Compile tests
+# Run tests
 "/c/Program Files/Eiffel Software/EiffelStudio 25.02 Standard/studio/spec/win64/bin/ec.exe" \
-  -batch -config simple_alpine.ecf -target simple_alpine_tests -c_compile
+  -batch -config simple_alpine.ecf -target simple_alpine_tests -tests
+
+# Compile and run mock app
+"/c/Program Files/Eiffel Software/EiffelStudio 25.02 Standard/studio/spec/win64/bin/ec.exe" \
+  -batch -config simple_alpine.ecf -target mock_app -c_compile
+./EIFGENs/mock_app/W_code/simple_alpine.exe
 
 # Clean compile (delete EIFGENs first)
 rm -rf EIFGENs && "/c/Program Files/Eiffel Software/EiffelStudio 25.02 Standard/studio/spec/win64/bin/ec.exe" \
@@ -44,19 +51,16 @@ rm -rf EIFGENs && "/c/Program Files/Eiffel Software/EiffelStudio 25.02 Standard/
 
 ### Current Status
 
-**Initial Development** - Compiles, tests not yet run
+**Phase 1 Complete** - 99 tests passing, mock app working
 
 Completed work:
 - ✅ ALPINE_ELEMENT base class with all Alpine.js directives
 - ✅ ALPINE_FACTORY with expression helpers and pre-built patterns
 - ✅ 26 element subclasses (inheriting from HTMX elements)
-- ✅ Test classes written (35+ directive tests, factory tests)
-- ✅ Compiles successfully
-
-Next steps:
-- Run tests in EiffelStudio AutoTest
-- Fix any test failures
-- Create GitHub repo and push
+- ✅ 99 tests passing
+- ✅ DBC contracts throughout
+- ✅ Mock app with 7 working components
+- ✅ GitHub repo created and pushed
 
 ---
 
@@ -82,17 +86,17 @@ SIMPLE_ALPINE is a fluent Alpine.js attribute builder for Eiffel web application
 
 ## Current State
 
-**Initial implementation complete.** The library includes:
+**Phase 1 Complete.** The library includes:
 
 ### Core Classes (2)
 - **ALPINE_ELEMENT**: Base class with all Alpine.js directives (inherits HTMX_ELEMENT)
 - **ALPINE_FACTORY**: Element creation + expression helpers + pre-built patterns
 
 ### Alpine.js Directives (18+)
-- **Data**: x-data, x-init
+- **Data**: x-data, x-init, x-effect
 - **Visibility**: x-show, x-if, x-cloak
 - **Content**: x-text, x-html
-- **Events**: x-on (with modifiers: .prevent, .stop, .outside, .debounce, .throttle)
+- **Events**: x-on (with modifiers: .prevent, .stop, .outside, .debounce, .throttle, .escape)
 - **Binding**: x-bind (shortcuts: :class, :style, :disabled, :aria-*)
 - **Two-way**: x-model (with .lazy, .debounce modifiers)
 - **Loops**: x-for
@@ -104,12 +108,13 @@ SIMPLE_ALPINE is a fluent Alpine.js attribute builder for Eiffel web application
 - `$refs`, `$store`, `$dispatch`, `$watch`, `$nextTick`, `$el`, `$root`, `$data`, `$id`
 
 ### Pre-built Patterns (Factory)
-- **dark_mode_data/toggle**: Theme switching
-- **dropdown_data/toggle**: Dropdown menus
+- **dark_mode_data/init/watch/toggle**: Theme switching with localStorage
+- **dropdown_data/toggle/close**: Dropdown menus
 - **modal_data/open/close**: Modal dialogs
 - **tabs_data/select/is_active**: Tabbed interfaces
 - **accordion_toggle/is_open**: Accordion panels
-- **counter_data/increment/decrement**: Counters with bounds
+- **counter_data/increment/decrement**: Counters
+- **loading_data/start/stop**: Loading states
 
 ### HTML Elements (26)
 All inherit from ALPINE_ELEMENT (which inherits HTMX_ELEMENT):
@@ -121,7 +126,17 @@ All inherit from ALPINE_ELEMENT (which inherits HTMX_ELEMENT):
 - **Semantic**: alpine_header, alpine_footer, alpine_nav, alpine_main, alpine_aside, alpine_article, alpine_section
 - **Special**: alpine_template (for x-if)
 
-**28 classes total. 35+ tests. Compiles successfully.**
+### Mock App
+Located in `src/mock_app/mock_app.e` - Generates index.html with working components:
+- Dark mode toggle (with localStorage persistence)
+- Dropdown menu (click-outside close, Escape key)
+- Modal dialog (backdrop, focus trap)
+- Tabs (active indicator, content panels)
+- Accordion (collapsible with x-collapse animation)
+- Counter (increment/decrement)
+- HTMX + Alpine combo (loading state)
+
+**28 classes total. 99 tests passing.**
 
 ---
 
@@ -142,6 +157,9 @@ ALPINE_FACTORY
     ├── Data builders (data_bool, data_string, data_int, data_object)
     ├── Magic helpers (refs, store, dispatch, watch, next_tick)
     └── Pre-built patterns (dark_mode, dropdown, modal, tabs, accordion)
+
+MOCK_APP
+    └── Generates index.html with all components for browser testing
 ```
 
 ---
@@ -169,7 +187,7 @@ TESTING_EXT=D:\prod\testing_ext
 
 ## Roadmap
 
-### Phase 1 - Foundation (IN PROGRESS)
+### Phase 1 - Foundation ✅ COMPLETE
 
 | Feature | Description | Status |
 |---------|-------------|--------|
@@ -182,17 +200,16 @@ TESTING_EXT=D:\prod\testing_ext
 | **Factory class** | Element creation + helpers | ✅ |
 | **Pre-built patterns** | dark mode, dropdown, modal, tabs | ✅ |
 | **26 element classes** | All common elements | ✅ |
-| **Test suite** | 35+ tests | ✅ Written |
-| **Compilation** | Compiles cleanly | ✅ |
-| **Test execution** | All tests pass | Pending |
+| **Test suite** | 99 tests | ✅ |
+| **DBC contracts** | Preconditions, postconditions, loop variants | ✅ |
+| **Mock app** | Browser-testable components | ✅ |
 
 ### Phase 2 - Integration
 
 | Feature | Description | Status |
 |---------|-------------|--------|
 | **simple_showcase integration** | Use in showcase website | Backlog |
-| **Contract strengthening** | DBC throughout | Backlog |
-| **Documentation** | Usage examples | Backlog |
+| **Documentation expansion** | More usage examples | Backlog |
 
 ### Phase 3 - Expansion (As Needed)
 
@@ -201,155 +218,31 @@ TESTING_EXT=D:\prod\testing_ext
 | **Additional plugins** | Persist, Morph, Focus | Backlog |
 | **Component helpers** | Toast, Tooltip, Popover | Backlog |
 | **Alpine stores** | Global state management helpers | Backlog |
-
----
-
-## API Quick Reference
-
-### Element Creation (Factory)
-
-```eiffel
-alpine: ALPINE_FACTORY
-
--- Create elements (have both HTMX and Alpine capabilities)
-l_div := alpine.div
-l_btn := alpine.button
-l_input := alpine.input
-l_template := alpine.template  -- For x-if
-```
-
-### Alpine Directives
-
-```eiffel
--- State and visibility
-l_div.x_data ("{ open: false }")
-l_div.x_show ("open")
-l_div.x_if ("showPanel")
-l_div.x_cloak
-
--- Content
-l_span.x_text ("message")
-l_div.x_html ("content")
-
--- Events
-l_btn.x_on_click ("open = !open")
-l_btn.x_on_click_prevent ("submitForm()")
-l_btn.x_on_click_outside ("open = false")
-l_input.x_on_keydown_escape ("clearSearch()")
-l_input.x_on_input_debounce ("search()", 300)
-
--- Binding
-l_div.x_bind_class ("{ 'active': isActive }")
-l_div.bind_class_active ("isActive")  -- Shortcut
-l_btn.bind_disabled ("isSubmitting")
-
--- Two-way binding
-l_input.x_model ("username")
-l_input.x_model_lazy ("email")
-l_input.x_model_debounce ("search", 500)
-
--- Loops
-l_template.x_for ("item in items")
-
--- References
-l_input.x_ref ("searchInput")
-
--- Transitions
-l_div.x_transition
-l_div.x_transition_opacity
-l_div.x_transition_scale ("95")
-l_div.x_transition_duration ("300")
-
--- Plugin directives
-l_div.x_collapse
-l_div.x_trap ("open")
-l_div.x_intersect ("shown = true")
-```
-
-### Expression Helpers (Factory)
-
-```eiffel
--- Toggle expression
-alpine.toggle ("open")                    -- "open = !open"
-
--- Ternary expression
-alpine.ternary ("dark", "'bg-black'", "'bg-white'")  -- "dark ? 'bg-black' : 'bg-white'"
-
--- Class binding helpers
-alpine.class_if ("hidden", "!visible")    -- "{ 'hidden': !visible }"
-alpine.class_multi (<<"active", "isActive", "disabled", "!enabled">>)
-```
-
-### Pre-built Patterns (Factory)
-
-```eiffel
--- Dark mode toggle
-l_div.x_data (alpine.dark_mode_data)
-l_btn.x_on_click (alpine.dark_mode_toggle)
-
--- Dropdown
-l_div.x_data (alpine.dropdown_data)
-l_btn.x_on_click (alpine.dropdown_toggle)
-l_menu.x_show ("open").x_on_click_outside ("open = false")
-
--- Modal
-l_div.x_data (alpine.modal_data)
-l_btn.x_on_click (alpine.modal_open)
-l_overlay.x_show ("open").x_on_click (alpine.modal_close)
-
--- Tabs
-l_div.x_data (alpine.tabs_data ("home"))
-l_tab.x_on_click (alpine.tabs_select ("settings"))
-l_panel.x_show (alpine.tabs_is_active ("settings"))
-
--- Counter with bounds
-l_div.x_data (alpine.counter_data (0, 0, 100))
-l_btn.x_on_click (alpine.counter_increment)
-l_btn.x_on_click (alpine.counter_decrement)
-```
-
-### Combined HTMX + Alpine
-
-```eiffel
--- Element has BOTH HTMX and Alpine capabilities
-l_btn := alpine.button
-    .x_data ("{ loading: false }")           -- Alpine state
-    .x_on_click ("loading = true")           -- Alpine event
-    .bind_disabled ("loading")               -- Alpine binding
-    .hx_post ("/api/submit")                 -- HTMX request
-    .hx_target ("#result")                   -- HTMX targeting
-    .hx_swap_inner_html                      -- HTMX swap
-    .hx_on_after_request ("loading = false") -- HTMX event -> Alpine
-```
-
----
-
-## When to Use Alpine vs HTMX
-
-| Use Case | Use HTMX | Use Alpine |
-|----------|----------|------------|
-| Fetch data from server | ✅ | |
-| Submit forms | ✅ | |
-| Server-rendered partials | ✅ | |
-| Toggle visibility (no server) | | ✅ |
-| Dark mode toggle | | ✅ |
-| Dropdown menus | | ✅ |
-| Form validation (client-side) | | ✅ |
-| Animations/transitions | | ✅ |
-| Local state management | | ✅ |
-| Both: Loading states | ✅ triggers | ✅ shows spinner |
+| **Raw attribute support** | Unescaped values for complex JS | Backlog |
 
 ---
 
 ## Known Issues
 
-None currently. Tests pending execution.
+### HTML Escaping Limitation
+
+**Issue**: JavaScript in Alpine attributes gets HTML-escaped by simple_htmx's `escape_html` function:
+- `=>` becomes `&gt;` (breaks arrow functions)
+- `&&` becomes `&amp;&amp;` (breaks logical AND)
+- `<` and `>` in comparisons get escaped
+
+**Workaround**:
+1. Avoid arrow functions in x-data/x-init expressions
+2. Use `x_effect` for side effects instead of `$watch` with callbacks
+3. Use semicolons to separate statements instead of arrow functions
+
+**Permanent fix (backlog)**: Add `attr_raw` method to simple_htmx for unescaped attribute values.
 
 ---
 
 ## Session Notes
 
-### 2025-12-03 (Initial Creation)
+### 2025-12-03 (Initial Creation + Phase 1 Complete)
 
 **Task**: Create simple_alpine library for Alpine.js directives
 
@@ -361,12 +254,18 @@ None currently. Tests pending execution.
 3. Clean inheritance (ALPINE_ELEMENT extends HTMX_ELEMENT)
 
 **Implementation**:
-- 28 classes total (2 core + 26 elements)
-- ~2,700 lines of code
-- 35+ tests written
-- Full Alpine.js directive coverage
+- Started with 28 classes, ~2,700 lines, 35 tests
+- Expanded to 99 tests covering all directives
+- Added DBC contracts throughout (class invariants, loop variants, pre/postconditions)
+- Built mock app with 7 working components
+- Discovered and worked around HTML escaping limitation
 
-**Result**: Compiles successfully, tests pending
+**Issues Discovered**:
+1. HTML escaping breaks JavaScript arrow functions - used alternative patterns
+2. Tailwind CDN doesn't support dark: variants - used custom CSS classes
+3. Dark mode needs document-level scope - used x-data on body element
+
+**Result**: 99 tests passing, mock app working in browser
 
 ---
 
@@ -376,3 +275,4 @@ None currently. Tests pending execution.
 - Classes use ECMA-367 standard Eiffel
 - Testing via EiffelStudio AutoTest framework with TEST_SET_BASE
 - Library extends simple_htmx - elements have both HTMX and Alpine capabilities
+- Mock app generates index.html for manual browser testing
