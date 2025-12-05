@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ljr1981/claude_eiffel_op_docs/main/artwork/LOGO.png" alt="simple_ library logo" width="400">
+</p>
+
 # simple_alpine
 
 Fluent Alpine.js attribute builder for Eiffel web applications. Extends [simple_htmx](https://github.com/ljr1981/simple_htmx) to add Alpine.js directives, enabling rich client-side interactivity.
