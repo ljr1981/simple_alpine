@@ -4,7 +4,7 @@
 
 # simple_alpine
 
-Fluent Alpine.js attribute builder for Eiffel web applications. Extends [simple_htmx](https://github.com/ljr1981/simple_htmx) to add Alpine.js directives, enabling rich client-side interactivity.
+Fluent Alpine.js attribute builder for Eiffel web applications. Extends [simple_htmx](https://github.com/simple-eiffel/simple_htmx) to add Alpine.js directives, enabling rich client-side interactivity.
 
 ## Overview
 
@@ -25,8 +25,8 @@ SIMPLE_ALPINE provides type-safe Alpine.js directive generation from Eiffel. Ele
 ### Prerequisites
 
 - EiffelStudio 25.02+
-- [simple_htmx](https://github.com/ljr1981/simple_htmx)
-- [testing_ext](https://github.com/ljr1981/testing_ext) (for tests)
+- [simple_htmx](https://github.com/simple-eiffel/simple_htmx)
+- [testing_ext](https://github.com/simple-eiffel/testing_ext) (for tests)
 
 ### Environment Variables
 
